@@ -4,18 +4,56 @@ framework:
         # failure_transport: failed
 
         transports:
-            kafka_test_topic:
+            kafka_producer:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 serializer: App\Messenger\TestTopic\TestTopicJsonSerializer
                 options:
-                    topic: 'test-topic'
-#                    receiveTimeout: 2000 # таймаут в мс
+                    flushTimeout: 10000
+                    flushRetries: 5
+                    topic:
+                        name: 'test_topic_2'
+                    kafka_conf:
+                        log_level: '7'
+                        metadata.broker.list: '%env(KAFKA_BROKER_LIST)%'
+                        message.send.max.retries: '5'
+                        #security.protocol: 'sasl_ssl'
+                        #ssl.ca.location: '%kernel.project_dir%/config/kafka/ca.pem'
+                        #sasl.username: '%env(KAFKA_SASL_USERNAME)%'
+                        #sasl.password: '%env(KAFKA_SASL_PASSWORD)%'
+                        #sasl.mechanisms: 'SCRAM-SHA-256'
+            kafka_test_topic:
+                dsn: "%env(MESSENGER_TRANSPORT_DSN)%"
+                serializer: App\Messenger\TestTopic\TestTopicJsonSerializer
+                options:
+                    commitAsync: true
+                    receiveTimeout: 10000
+                    topic:
+                        name: 'test_topic_2'
+                    kafka_conf:
+                        enable.auto.offset.store: 'false'
+                        group.id: 'group_1'
+                        log_level: '7'
+                        enable.auto.commit: 'true'
+                        metadata.broker.list: '%env(KAFKA_BROKER_LIST)%'
+                        security.protocol: 'plaintext' # plaintext, ssl, sasl_plaintext, sasl_ssl
+                        auto.offset.reset: 'earliest' # 'earliest': start from the beginning
+                        enable.partition.eof: 'true' # Emit EOF event when reaching the end of a partition
+                        #security.protocol: 'sasl_ssl'
+                        #ssl.ca.location: '%kernel.project_dir%/config/kafka/ca.pem'
+                        #sasl.username: '%env(KAFKA_SASL_USERNAME)%'
+                        #sasl.password: '%env(KAFKA_SASL_PASSWORD)%'
+                        #sasl.mechanisms: 'SCRAM-SHA-256'
+                        max.poll.interval.ms: '45000'
+                    topic_conf:
+                        auto.offset.reset: 'earliest'
+
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
 
         routing:
+            App\Messenger\TestTopic\Message\TestTopicMessage: kafka_test_topic
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
 

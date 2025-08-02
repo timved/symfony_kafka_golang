@@ -1,30 +1,6 @@
 {
-    "enqueue/enqueue-bundle": {
-        "version": "0.10",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "0.9",
-            "ref": "c6ec89b63f963d10ad0d7a7bea170359c119c8bc"
-        }
-    },
-    "enqueue/rdkafka": {
-        "version": "0.10",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "0.8",
-            "ref": "52a1ce303070ba433874414402e240cca13ed17d"
-        }
-    },
-    "sroze/messenger-enqueue-transport": {
-        "version": "0.8",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "0.1",
-            "ref": "9a7119f609b576a30dbf03e4fe44212388e96ea1"
-        }
+    "koco/messenger-kafka": {
+        "version": "v0.18"
     },
     "symfony/console": {
         "version": "7.3",
