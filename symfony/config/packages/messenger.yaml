@@ -4,6 +4,10 @@ framework:
         # failure_transport: failed
 
         transports:
+            kafka:
+                dsn: 'rdkafka://kafka:9092?topic=my_topic'
+                options:
+                    receiveTimeout: 2000 # таймаут в мс
             # https://symfony.com/doc/current/messenger.html#transport-configuration
             # async: '%env(MESSENGER_TRANSPORT_DSN)%'
             # failed: 'doctrine://default?queue_name=failed'
