@@ -1,0 +1,21 @@
+version: '3'
+
+tasks:
+  composer:
+    desc: Выполнить composer install внутри контейнера php
+    vars:
+      CMD:
+        sh: |
+          if [ -z "$CMD" ]; then
+            echo "install"
+          else
+            echo "$CMD"
+          fi
+    cmds:
+      - docker compose exec php composer {{.CMD}}
+
+  console:
+    desc: "Выполнить любую Symfony-консольную команду в контейнере php"
+    cmds:
+      - docker compose exec php php bin/console {{.CLI_ARGS}}
+    interactive: true
