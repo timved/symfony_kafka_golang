@@ -3,7 +3,6 @@
 namespace App\Messenger\TestTopic;
 
 use App\Messenger\TestTopic\Message\TestTopicMessage;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\MessageDecodingFailedException;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
