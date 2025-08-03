@@ -2,24 +2,24 @@ version: '3'
 
 tasks:
   start:
-    desc: Выполнить composer install внутри контейнера php
+    desc: Развернуть проект
     cmds:
       - docker compose down
       - docker compose up -d --build
       - docker compose exec php composer install
 
   up:
-    desc: Выполнить composer install внутри контейнера php
+    desc: Выполнить docker compose up
     cmds:
-      - docker compose up
+      - docker compose up {{.CLI_ARGS}}
 
   down:
-    desc: Выполнить composer install внутри контейнера php
+    desc: Выполнить docker compose down
     cmds:
-      - docker compose up
+      - docker compose down
 
   composer:
-    desc: Выполнить composer install внутри контейнера php
+    desc: Выполнить composer команду внутри контейнера php
     cmds:
       - docker compose exec php composer {{.CLI_ARGS}}
 
@@ -28,3 +28,8 @@ tasks:
     cmds:
       - docker compose exec php php bin/console {{.CLI_ARGS}}
     interactive: true
+
+  go:
+    desc: Выполнить golang команду
+    cmds:
+      - docker compose run --rm go-cli go {{.CLI_ARGS}}
