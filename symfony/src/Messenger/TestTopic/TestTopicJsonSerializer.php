@@ -13,22 +13,9 @@ class TestTopicJsonSerializer implements SerializerInterface
 {
     public function decode(array $encodedEnvelope): Envelope
     {
-        //     [
-        //         'body' => '<payload>',
-        //         'headers' => [
-        //             'key' => '<Kafka Key>',
-        //             'offset' => 42,
-        //             'partition' => 0,
-        //             'topic' => 'test',
-        //             // ... другие заголовки
-        //         ],
-        //         // messenger стандартные поля:
-        //         'message' => ...
-        //     ]
         $body = $encodedEnvelope['body'] ?? '';
-        $headers = $encodedEnvelope['headers'] ?? [];
-        $kafkaKey = $headers['key'] ?? null;
-        $kafkaOffset = $headers['offset'] ?? null;
+        $kafkaKey = $encodedEnvelope['key'] ?? null;
+        $kafkaOffset = $encodedEnvelope['offset'] ?? null;
 
         if (empty($body)) {
             throw new MessageDecodingFailedException('Empty Kafka message');
@@ -37,11 +24,11 @@ class TestTopicJsonSerializer implements SerializerInterface
         $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
 
         $message = new TestTopicMessage(
-            $kafkaKey,
-            $kafkaOffset,
             $data['id'],
             $data['name'],
             $data['payment'],
+            $kafkaKey,
+            $kafkaOffset,
         );
 
         return new Envelope($message);
@@ -59,17 +46,15 @@ class TestTopicJsonSerializer implements SerializerInterface
         ];
 
         $result = [
-            'headers' => [],
             'body' => json_encode($payload, JSON_THROW_ON_ERROR),
         ];
 
         if ($message->getMessageKey()) {
             $result['key'] = $message->getMessageKey();
-            $result['headers']['key'] = $message->getMessageKey();
         }
 
         if ($message->getMessageOffset()) {
-            $result['headers']['offset'] = $message->getMessageOffset();
+            $result['offset'] = $message->getMessageOffset();
         }
 
         return $result;

@@ -19,8 +19,8 @@ readonly class TestTopicMessageHandler
         $logPath = $this->params->get('kernel.project_dir') . '/var/kafka/test_topic.log';
 
         file_put_contents($logPath, json_encode([
-            'key' => $message->getMessageKey(),
             'offset' => $message->getMessageOffset(),
+            'key' => $message->getMessageKey(),
             'id' => $message->getId(),
             'name' => $message->getName(),
             'payment' => $message->getPayment(),

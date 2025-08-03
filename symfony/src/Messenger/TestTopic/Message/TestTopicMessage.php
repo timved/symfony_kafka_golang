@@ -7,11 +7,11 @@ namespace App\Messenger\TestTopic\Message;
 readonly class TestTopicMessage
 {
     public function __construct(
-        private ?string $messageKey = null,
-        private ?string $messageOffset = null,
         private string $id,
         private string $name,
         private string $payment,
+        private ?string $messageKey = null,
+        private ?int $messageOffset = null,
     ) {
     }
 
@@ -20,7 +20,7 @@ readonly class TestTopicMessage
         return $this->messageKey;
     }
 
-    public function getMessageOffset(): ?string
+    public function getMessageOffset(): ?int
     {
         return $this->messageOffset;
     }

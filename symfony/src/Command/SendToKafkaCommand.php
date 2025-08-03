@@ -33,6 +33,6 @@ class SendToKafkaCommand extends Command
     private function testKafka(): void
     {
         $faker = Factory::create('ru_RU');
-        $this->messageBus->dispatch(new TestTopicMessage('key_number', null, '777', $faker->text(7), '2500'));
+        $this->messageBus->dispatch(new TestTopicMessage('777', $faker->text(7), '2500', 'key_number', null));
     }
 }
