@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Messenger\TestTopic;
 
 use App\Messenger\TestTopic\Message\TestTopicMessage;
@@ -14,7 +16,6 @@ class TestTopicJsonSerializer implements SerializerInterface
         $body = $encodedEnvelope['body'] ?? '';
         if (empty($body)) {
             throw new MessageDecodingFailedException('Empty Kafka message');
-
         }
 
         $data = json_decode($body, true, 512, JSON_THROW_ON_ERROR);

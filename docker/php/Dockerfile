@@ -25,9 +25,6 @@ xdebug.client_host = host.docker.internal\n\
 xdebug.client_port = 9003\n\
 " >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-RUN apt-get update \
-    && apt-get install -y librdkafka-dev \
-    && pecl install rdkafka \
-    && docker-php-ext-enable rdkafka
+RUN php -m | grep -qw rdkafka || (apt-get install -y librdkafka-dev && pecl install rdkafka && docker-php-ext-enable rdkafka)
 
 WORKDIR /var/www/html

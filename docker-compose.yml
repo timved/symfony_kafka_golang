@@ -10,10 +10,9 @@ services:
     working_dir: /var/www/html
     extra_hosts:
       - host.docker.internal:host-gateway
-    environment:
-      - Kafka_BROKER=kafka:9092
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
 
   nginx:
     image: nginx:alpine
@@ -45,13 +44,12 @@ services:
       - KAFKA_KRAFT_CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk
     volumes:
       - ./kafka:/bitnami/kafka
-
-  go-cli:
-    image: golang:1.22
-    container_name: go_cli
-    volumes:
-      - ./golang:/app
-    working_dir: /app
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics.sh --list --bootstrap-server localhost:9092 || exit 1"]
+      interval: 1s
+      timeout: 60s
+      retries: 60
+      start_period: 10s
 
   kafdrop:
     image: obsidiandynamics/kafdrop
@@ -62,4 +60,16 @@ services:
       KAFKA_BROKER_CONNECT: "kafka:9092"
       JVM_OPTS: "-Xms32M -Xmx128M"
     depends_on:
-      - kafka
+      kafka:
+        condition: service_healthy
+
+  golang_producer:
+    build:
+      context: ./golang/kafka_producer
+      dockerfile: Dockerfile
+    container_name: golang_producer
+    environment:
+      - KAFKA_BROKER=kafka:9092
+    depends_on:
+      kafka:
+        condition: service_healthy

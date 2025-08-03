@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Command;
 
 use App\Messenger\TestTopic\Message\TestTopicMessage;
@@ -31,7 +33,7 @@ class SendToKafkaCommand extends Command
     private function testKafka(): void
     {
         $faker = Factory::create('ru_RU');
-        for ($i = 1000; $i <= 1002; $i++) {
+        for ($i = 1000; $i <= 1002; ++$i) {
             $this->messageBus->dispatch(new TestTopicMessage('partition_1', $faker->text(7), $i));
         }
     }
