@@ -1,3 +1,4 @@
 /.idea
 /kafka/
 /golang/kafka_producer/.idea/
+/golang/kafka_consumer/.idea/
