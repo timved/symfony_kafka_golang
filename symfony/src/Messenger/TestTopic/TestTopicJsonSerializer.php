@@ -58,19 +58,20 @@ class TestTopicJsonSerializer implements SerializerInterface
             'payment' => $message->getPayment(),
         ];
 
-        $headers = [];
+        $result = [
+            'headers' => [],
+            'body' => json_encode($payload, JSON_THROW_ON_ERROR),
+        ];
+
         if ($message->getMessageKey()) {
-            $headers['key'] = $message->getMessageKey();
+            $result['key'] = $message->getMessageKey();
+            $result['headers']['key'] = $message->getMessageKey();
         }
 
         if ($message->getMessageOffset()) {
-            $headers['offset'] = $message->getMessageOffset();
+            $result['headers']['offset'] = $message->getMessageOffset();
         }
 
-        return [
-            'key' => $message->getMessageKey(),
-            'headers' => $headers,
-            'body' => json_encode($payload, JSON_THROW_ON_ERROR),
-        ];
+        return $result;
     }
 }
