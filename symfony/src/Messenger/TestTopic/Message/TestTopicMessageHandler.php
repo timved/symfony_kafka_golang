@@ -19,16 +19,12 @@ readonly class TestTopicMessageHandler
         $logPath = $this->params->get('kernel.project_dir') . '/var/kafka/test_topic.log';
 
         file_put_contents($logPath, json_encode([
+            'key' => $message->getMessageKey(),
+            'offset' => $message->getMessageOffset(),
             'id' => $message->getId(),
             'name' => $message->getName(),
             'payment' => $message->getPayment(),
             'datetime' => (new \DateTimeImmutable())->setTimezone(new \DateTimeZone('Europe/Moscow'))->format('d.m.Y H:i:s'),
         ], JSON_THROW_ON_ERROR) . PHP_EOL, FILE_APPEND);
-
-        echo sprintf(
-            "Оплата от %s сумма %d \n",
-            $message->getName(),
-            $message->getPayment()
-        );
     }
 }

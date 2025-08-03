@@ -73,3 +73,14 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+
+  golang_consumer:
+    build:
+      context: ./golang/kafka_consumer
+      dockerfile: Dockerfile
+    container_name: golang_consumer
+    environment:
+      - KAFKA_BROKER=kafka:9092
+    depends_on:
+      kafka:
+        condition: service_healthy

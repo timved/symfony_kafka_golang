@@ -5,9 +5,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/brianvoe/gofakeit/v6"
+	gofakeit "github.com/brianvoe/gofakeit/v6"
 	"github.com/google/uuid"
-	"github.com/segmentio/kafka-go"
+	kafka "github.com/segmentio/kafka-go"
 	"log"
 	"math/rand"
 	"os"
@@ -27,20 +27,6 @@ func main() {
 	fmt.Println("Отправка сообщений в kafka: ", broker)
 	fmt.Println("HOSTNAME:", hostname)
 
-	//&kafka.LeastBytes{}, // Сообщение уходит в партицию, которая сейчас меньше всего загружена (в ней меньше байт).
-	//&kafka.Hash{}       //Сообщения с одинаковым ключом всегда идут в одну и ту же партицию.
-	//&kafka.RoundRobin{} //Сообщения равномерно идут по очереди во все партиции.
-	//&kafka.Cyclic       //Как round robin, но без учета ключей.
-	writer := kafka.Writer{
-		Addr:     kafka.TCP(broker),
-		Topic:    "test_topic_2",
-		Balancer: &kafka.LeastBytes{},
-	}
-	defer writer.Close()
-
-	ctx := context.Background()
-	key := uuid.New().String()
-
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("Введи команду: send (отправить сообщение) или exit (выход из приложения)")
 
@@ -53,9 +39,19 @@ func main() {
 
 		switch cmd {
 		case "send":
+			fmt.Print("Введите название топика: ")
+			scanner.Scan()
+			topic := scanner.Text()
+			if topic == "exit" {
+				fmt.Println("Выход.")
+				return
+			}
+
+			ctx := context.Background()
+			key := uuid.New().String()
 			payment := strconv.Itoa(rand.Intn(100))
 			msg := Message{ID: key, Name: gofakeit.Name(), Payment: payment}
-			err := sendJSONToKafka(ctx, &writer, key, msg)
+			err := sendJSONToKafka(ctx, broker, key, topic, msg)
 			if err != nil {
 				log.Fatalf("Ошибка отправки: %v", err)
 			}
@@ -74,7 +70,19 @@ func main() {
 
 }
 
-func sendJSONToKafka(ctx context.Context, writer *kafka.Writer, key string, msg Message) error {
+func sendJSONToKafka(ctx context.Context, broker string, key string, topic string, msg Message) error {
+
+	//&kafka.LeastBytes{}, // Сообщение уходит в партицию, которая сейчас меньше всего загружена (в ней меньше байт).
+	//&kafka.Hash{}       //Сообщения с одинаковым ключом всегда идут в одну и ту же партицию.
+	//&kafka.RoundRobin{} //Сообщения равномерно идут по очереди во все партиции.
+	//&kafka.Cyclic       //Как round robin, но без учета ключей.
+	writer := &kafka.Writer{
+		Addr:     kafka.TCP(broker),
+		Topic:    topic,
+		Balancer: &kafka.LeastBytes{},
+	}
+	defer writer.Close()
+
 	data, err := json.Marshal(msg)
 	if err != nil {
 		log.Fatalf("ошибка сериализации: %v", err)
