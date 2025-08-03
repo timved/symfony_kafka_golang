@@ -46,7 +46,7 @@ class TestTopicJsonSerializer implements SerializerInterface
         ];
 
         $result = [
-            'body' => json_encode($payload, JSON_THROW_ON_ERROR),
+            'body' => json_encode($payload, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE),
         ];
 
         if ($message->getMessageKey()) {

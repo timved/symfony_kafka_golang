@@ -25,6 +25,6 @@ readonly class TestTopicMessageHandler
             'name' => $message->getName(),
             'payment' => $message->getPayment(),
             'datetime' => (new \DateTimeImmutable())->setTimezone(new \DateTimeZone('Europe/Moscow'))->format('d.m.Y H:i:s'),
-        ], JSON_THROW_ON_ERROR) . PHP_EOL, FILE_APPEND);
+        ], JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE) . PHP_EOL, FILE_APPEND);
     }
 }
