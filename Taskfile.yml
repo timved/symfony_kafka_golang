@@ -1,6 +1,23 @@
 version: '3'
 
 tasks:
+  start:
+    desc: Выполнить composer install внутри контейнера php
+    cmds:
+      - docker compose down
+      - docker compose up -d --build
+      - docker compose exec php composer install
+
+  up:
+    desc: Выполнить composer install внутри контейнера php
+    cmds:
+      - docker compose up
+
+  down:
+    desc: Выполнить composer install внутри контейнера php
+    cmds:
+      - docker compose up
+
   composer:
     desc: Выполнить composer install внутри контейнера php
     cmds:
